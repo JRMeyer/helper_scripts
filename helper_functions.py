@@ -64,7 +64,5 @@ def csv_to_list(fileName, delim):
     of the structure table[row][col]."""
     import csv
     with open(fileName, "Ur") as f:
-        global data
         data = list(rec for rec in csv.reader(f,delimiter=delim))
-        print("Your data is now in the global object 'data' --- Enjoy!")
-
+    return data
