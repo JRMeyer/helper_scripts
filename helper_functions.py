@@ -21,9 +21,7 @@ def scan_for_files(dir_to_scan, extension=".txt", subDirs=True):
 
 def copy_all_files(dir_to_scan, dir_to_copy, extension=".txt", 
                    delete_org = True):
-    import os
-    import glob  
-    import shutil
+    import os, glob, shutil
     for path, dirs, files in os.walk(dir_to_scan):
         for d in dirs:
             for f in glob.iglob(os.path.join(path, d, extension)):
@@ -32,6 +30,22 @@ def copy_all_files(dir_to_scan, dir_to_copy, extension=".txt",
                     os.remove(f)
                 else:
                     pass
+
+
+def rename_regex_sub_fileName(dirPath, toMatch, toSub, extension):
+    """ 
+    Takes a directory of files, scans each filename for the regexpr 
+    'toMatch', and then substitutes match with the character string 'toSub'.
+    Example: 'April_14_2015.txt' --> '4_14_2015.txt', if toMatch == 'April' and 
+    toSub == '4'.
+    """
+    import os, glob, re
+    for orgPath in glob.iglob(os.path.join(dirPath, extension)):
+        fileName, ext = os.path.splitext(os.path.basename(orgPath))
+        if toMatch in fileName:
+            newFileName = re.sub(toMatch, toSub, fileName, count=1)
+            newPath = os.path.join(dirPath, newFileName + ext)
+            os.rename(orgPath, newPath)
 
 
 def delete_all_files(dir_to_scan, extension="*.txt"):
@@ -43,9 +57,11 @@ def delete_all_files(dir_to_scan, extension="*.txt"):
                 os.remove(f)
 
 
-def regex_sub_in_files(dirName, toMatch, theSub):
-    """ Takes a directory of files, scans each file for the regexpr 'toMatch', 
-    and then substitutes the match with the character string 'theSub'. """
+def regex_sub_in_files(dirName, toMatch, toSub):
+    """ 
+    Takes a directory of files, scans each file's contents for the regexpr 
+    'toMatch', and then substitutes match with the character string 'toSub'.
+    """
     import re
     import os 
     listFiles = os.listdir(dirName)
@@ -53,7 +69,7 @@ def regex_sub_in_files(dirName, toMatch, theSub):
         f = open((dirName + filePath), "r")
         fText = f.read()
         f.close()
-        newText = re.sub(toMatch, theSub, fText, count=1)
+        newText = re.sub(toMatch, toSub, fText, count=1)
         newF = open((dirName + filePath + ".new"), "w")
         newF.write(newText)
         newF.close()
