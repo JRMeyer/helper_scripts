@@ -1,4 +1,4 @@
-### Maybe useful, somewhat generalized functions:
+### Somewhat general functions:
 
 def scan_for_files(dir_to_scan, extension=".txt", subDirs=True):
     import os
@@ -19,8 +19,7 @@ def scan_for_files(dir_to_scan, extension=".txt", subDirs=True):
     print "Search matched: ", str(numFiles), " files"
 
 
-def copy_all_files(dir_to_scan, dir_to_copy, extension=".txt", 
-                   delete_org = True):
+def copy_all_files(dir_to_scan, dir_to_copy, extension, delete_org = False):
     import os, glob, shutil
     for path, dirs, files in os.walk(dir_to_scan):
         for d in dirs:
@@ -32,7 +31,7 @@ def copy_all_files(dir_to_scan, dir_to_copy, extension=".txt",
                     pass
 
 
-def rename_regex_sub_fileName(dirPath, toMatch, toSub, extension):
+def rename_file(dirPath, toMatch, toSub, extension):
     """ 
     Takes a directory of files, scans each filename for the regexpr 
     'toMatch', and then substitutes match with the character string 'toSub'.
