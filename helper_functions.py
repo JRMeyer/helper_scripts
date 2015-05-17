@@ -19,19 +19,32 @@ def scan_for_files(dir_to_scan, extension=".txt", subDirs=True):
     print "Search matched: ", str(numFiles), " files"
 
 
-def copy_all_files(dir_to_scan, dir_to_copy, extension, delete_org = False):
+def copy_files(dir_to_scan, dir_to_copy, extension, recursive, 
+               delete_org = False):
     import os, glob, shutil
-    for path, dirs, files in os.walk(dir_to_scan):
-        for d in dirs:
-            for f in glob.iglob(os.path.join(path, d, extension)):
-                shutil.copyfile(f, (dir_to_copy + os.path.basename(f)))
-                if delete_org==True:
-                    os.remove(f)
-                else:
-                    pass
+
+    if recursive == False:
+        for orgPath in glob.iglob(os.path.join(dir_to_scan, extension)):
+            fileName, ext = os.path.splitext(os.path.basename(orgPath))
+            shutil.copyfile((dir_to_scan+fileName+ext),
+                            (dir_to_copy+fileName+ext))
+            if delete_org==True:
+                os.remove(dir_to_scan+fileName+ext)
+            else:
+                pass
+
+    elif recursive == True:
+        for path, dirs, files in os.walk(dir_to_scan):
+            for d in dirs:
+                for f in glob.iglob(os.path.join(path, d, extension)):
+                    shutil.copyfile(f, (dir_to_copy + os.path.basename(f)))
+                    if delete_org==True:
+                        os.remove(f)
+                    else:
+                        pass
 
 
-def rename_file(dirPath, toMatch, toSub, extension):
+def rename_files(dirPath, toMatch, toSub, extension):
     """ 
     Takes a directory of files, scans each filename for the regexpr 
     'toMatch', and then substitutes match with the character string 'toSub'.
