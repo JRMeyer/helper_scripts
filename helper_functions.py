@@ -1,4 +1,5 @@
 ### Somewhat general functions:
+    
 
 def scan_for_files(dir_to_scan, extension=".txt", subDirs=True):
     import os
@@ -87,10 +88,12 @@ def regex_sub_in_files(dirName, toMatch, toSub):
         newF.close()
 
 
-def csv_to_list(fileName, delim):
+def csv_to_list(filePath, **kwargs):
     """ Takes a csv file and its delimiter and returns a table
     of the structure table[row][col]."""
     import csv
-    with open(fileName, "Ur") as f:
-        data = list(rec for rec in csv.reader(f,delimiter=delim))
-    return data
+    csv_reader = csv.reader(open(filePath), **kwargs):
+            for row in csv_reader:
+                print row
+        # data = [cell for cell in row for row in csv.reader(f, **kwargs)]
+    # return data
