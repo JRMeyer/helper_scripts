@@ -82,18 +82,19 @@ def regex_sub_in_files(dirName, toMatch, toSub):
         f = open((dirName + filePath), "r")
         fText = f.read()
         f.close()
-        newText = re.sub(toMatch, toSub, fText, count=1)
+        # if count is omitted or set to zero, all instances are replaced
+        newText = re.sub(toMatch, toSub, fText, count=0)
         newF = open((dirName + filePath + ".new"), "w")
         newF.write(newText)
         newF.close()
 
 
-def csv_to_list(filePath, **kwargs):
-    """ Takes a csv file and its delimiter and returns a table
-    of the structure table[row][col]."""
-    import csv
-    csv_reader = csv.reader(open(filePath), **kwargs):
-            for row in csv_reader:
-                print row
-        # data = [cell for cell in row for row in csv.reader(f, **kwargs)]
-    # return data
+# def csv_to_list(filePath, **kwargs):
+#     """ Takes a csv file and its delimiter and returns a table
+#     of the structure table[row][col]."""
+#     import csv
+#     csv_reader = csv.reader(open(filePath), **kwargs):
+#             for row in csv_reader:
+#                 print row
+#         # data = [cell for cell in row for row in csv.reader(f, **kwargs)]
+#     # return data
