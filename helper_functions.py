@@ -70,21 +70,30 @@ def delete_all_files(dir_to_scan, extension="*.txt"):
                 os.remove(f)
 
 
-def regex_sub_in_files(dirName, toMatch, toSub):
+def regex_sub_in_files(myPath, toMatch, toSub, encoding):
     """ 
-    Takes a directory of files, scans each file's contents for the regexpr 
+    Takes a file or dir of files, scans each file's contents for the regexpr 
     'toMatch', and then substitutes match with the character string 'toSub'.
     """
     import re
-    import os 
-    listFiles = os.listdir(dirName)
-    for filePath in listFiles:
-        f = open((dirName + filePath), "r")
+    import os
+    import codecs
+
+    if os.path.isfile(myPath):
+        paths = [myPath]
+    elif os.path.isdir(myPath):
+        paths = [myPath+fileName for fileName in os.listdir(myPath)]
+
+    for path in paths:
+        f = codecs.open(path, "r", encoding)
         fText = f.read()
         f.close()
-        # if count is omitted or set to zero, all instances are replaced
+
+        print fText[:1000]
+        print '======================\n'
         newText = re.sub(toMatch, toSub, fText, count=0)
-        newF = open((dirName + filePath + ".new"), "w")
+        print newText[:1000]
+        newF = codecs.open((path + ".new"), "w", encoding)
         newF.write(newText)
         newF.close()
 
