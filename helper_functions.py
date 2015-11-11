@@ -15,9 +15,9 @@ def scan_for_files(dir_to_scan, extension=".txt", subDirs=True):
         for path, dirs, files in os.walk(dir_to_scan):
             for d in dirs:
                 for f in glob.iglob(os.path.join(path, d, extension)):
-                    print f
+                    print(f)
                     numFiles+=1
-    print "Search matched: ", str(numFiles), " files"
+    print("Search matched: ", str(numFiles), " files")
 
 
 def copy_files(dir_to_scan, dir_to_copy, extension, recursive, 
@@ -53,7 +53,7 @@ def rename_files(dirPath, toMatch, toSub, extension):
     toSub == '4'.
     """
     import os, glob, re
-    for orgPath in glob.iglob(os.path.join(dirPath, extension)):
+    for orgPath in glob.iglob(os.path.join(dirPath, ('*'+extension))):
         fileName, ext = os.path.splitext(os.path.basename(orgPath))
         if toMatch in fileName:
             newFileName = re.sub(toMatch, toSub, fileName, count=1)
@@ -88,22 +88,47 @@ def regex_sub_in_files(myPath, toMatch, toSub, encoding):
         f = codecs.open(path, "r", encoding)
         fText = f.read()
         f.close()
-
-        print fText[:1000]
-        print '======================\n'
+        
         newText = re.sub(toMatch, toSub, fText, count=0)
-        print newText[:1000]
         newF = codecs.open((path + ".new"), "w", encoding)
         newF.write(newText)
         newF.close()
 
+regex_sub_in_files('kazakh_online.transcription', 'kaz_',
+                   '(kazakh_', 'utf-8')
 
-# def csv_to_list(filePath, **kwargs):
-#     """ Takes a csv file and its delimiter and returns a table
-#     of the structure table[row][col]."""
-#     import csv
-#     csv_reader = csv.reader(open(filePath), **kwargs):
-#             for row in csv_reader:
-#                 print row
-#         # data = [cell for cell in row for row in csv.reader(f, **kwargs)]
-#     # return data
+        
+def concatenate_files(dirPath, regex, extension):
+    '''
+    Given a dir, a file extension, and a regex to match in the filename,
+    concatenate all files into one. 'outfile.txt'
+    '''
+    import fileinput
+    import os, glob, re
+
+    filePaths=[]
+    for orgPath in glob.iglob(os.path.join(dirPath, ('*'+extension))):
+        fileName, ext = os.path.splitext(os.path.basename(orgPath))
+        if regex in fileName:
+            filePaths.append(orgPath)
+
+    # regex pattern to match everything that isn't a letter
+    pattern = re.compile('[\W_0-9]+', re.UNICODE)
+    
+    with open('output.txt', 'w') as outFile:
+        for filePath in filePaths:
+            fileName, ext = os.path.splitext(os.path.basename(filePath))
+            with open(filePath) as inFile:
+                i=0
+                for line in inFile.readlines():
+                    i+=1
+                    if i<10:
+                        j='0'+str(i)
+                    else:
+                        j=str(i)
+                        
+                    # replace everything that isn't a letter or space
+                    line = (' ').join([pattern.sub('', token) for
+                                       token in line.split(' ')])
+                    outFile.write('<s> ' + line.lower().rstrip() +' </s> (atai_'
+                                  + j + ')\n')
