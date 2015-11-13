@@ -60,6 +60,7 @@ def rename_files(dirPath, toMatch, toSub, extension):
             newPath = os.path.join(dirPath, newFileName + ext)
             os.rename(orgPath, newPath)
 
+# rename_files('/home/josh/google_drive/misc/corpora/kyrgyz/my_corpus/tokmok_1/wav_16k_mono_merged/', '.wav_16k', '', '.wav')
 
 def delete_all_files(dir_to_scan, extension="*.txt"):
     import os
@@ -94,16 +95,12 @@ def regex_sub_in_files(myPath, toMatch, toSub, encoding):
         newF.write(newText)
         newF.close()
 
-regex_sub_in_files('kazakh_online.transcription', 'kaz_',
-                   '(kazakh_', 'utf-8')
-
         
-def concatenate_files(dirPath, regex, extension):
+def concatenate_files(dirPath, regex, extension, encoding):
     '''
     Given a dir, a file extension, and a regex to match in the filename,
     concatenate all files into one. 'outfile.txt'
     '''
-    import fileinput
     import os, glob, re
 
     filePaths=[]
@@ -115,20 +112,28 @@ def concatenate_files(dirPath, regex, extension):
     # regex pattern to match everything that isn't a letter
     pattern = re.compile('[\W_0-9]+', re.UNICODE)
     
-    with open('output.txt', 'w') as outFile:
+    with open('output.txt', 'w', encoding = encoding) as outFile:
         for filePath in filePaths:
             fileName, ext = os.path.splitext(os.path.basename(filePath))
-            with open(filePath) as inFile:
+            with open(filePath, encoding = encoding) as inFile:
                 i=0
                 for line in inFile.readlines():
-                    i+=1
-                    if i<10:
-                        j='0'+str(i)
-                    else:
-                        j=str(i)
-                        
-                    # replace everything that isn't a letter or space
-                    line = (' ').join([pattern.sub('', token) for
-                                       token in line.split(' ')])
-                    outFile.write('<s> ' + line.lower().rstrip() +' </s> (atai_'
-                                  + j + ')\n')
+                    # # replace everything that isn't a letter or space
+                    # line = (' ').join([pattern.sub('', token) for
+                    #                    token in line.split(' ')])
+                    outFile.write(line.split(' ')[-1][1:-2]+'\n')
+
+
+# concatenate_files('.','tokmok', '.transcription', 'utf-8')
+
+
+def compare_files(fileName1, fileName2, encoding):
+    import difflib
+    
+    with open(fileName1, encoding=encoding) as file1, open(fileName2, encoding=encoding) as file2:
+        file1Lines = file1.readlines()
+        file2Lines = file2.readlines()
+
+        d = difflib.Differ()
+        diff = d.compare(file1Lines, file2Lines)
+        print("\n".join(diff))
