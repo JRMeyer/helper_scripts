@@ -116,15 +116,16 @@ def concatenate_files(dirPath, regex, extension, encoding):
         for filePath in filePaths:
             fileName, ext = os.path.splitext(os.path.basename(filePath))
             with open(filePath, encoding = encoding) as inFile:
-                i=0
-                for line in inFile.readlines():
-                    # # replace everything that isn't a letter or space
-                    # line = (' ').join([pattern.sub('', token) for
-                    #                    token in line.split(' ')])
-                    outFile.write(line.split(' ')[-1][1:-2]+'\n')
+                content = inFile.read()
+                for line in content.split('.'):
+                    line = line.lower().rstrip()
+                    # replace everything that isn't a letter or space
+                    line = (' ').join([pattern.sub('', token) for
+                                       token in line.split(' ')])
+                    outFile.write(line+'\n')
 
 
-# concatenate_files('.','tokmok', '.transcription', 'utf-8')
+# concatenate_files('/home/josh/google_drive/misc/corpora/kyrgyz/text/','kyr', '.txt', 'utf-8')
 
 
 def compare_files(fileName1, fileName2, encoding):
