@@ -95,7 +95,8 @@ def regex_sub_in_files(myPath, toMatch, toSub, encoding):
         newF.write(newText)
         newF.close()
 
-        
+# regex_sub_in_files('/home/josh/Desktop/adapting_folder/atai_plus_tokmok_1.fileids', '\n', '\nadapting_folder/', 'ascii')
+       
 def concatenate_files(dirPath, regex, extension, encoding):
     '''
     Given a dir, a file extension, and a regex to match in the filename,
@@ -124,8 +125,6 @@ def concatenate_files(dirPath, regex, extension, encoding):
                                        token in line.split(' ')])
                     outFile.write(line+'\n')
 
-
-# concatenate_files('/home/josh/google_drive/misc/corpora/kyrgyz/text/','kyr', '.txt', 'utf-8')
 
 
 def compare_files(fileName1, fileName2, encoding):
