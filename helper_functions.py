@@ -25,14 +25,17 @@ def copy_files(dir_to_scan, dir_to_copy, extension, recursive,
     import os, glob, shutil
 
     if recursive == False:
-        for orgPath in glob.iglob(os.path.join(dir_to_scan, extension)):
-            fileName, ext = os.path.splitext(os.path.basename(orgPath))
-            shutil.copyfile((dir_to_scan+fileName+ext),
-                            (dir_to_copy+fileName+ext))
-            if delete_org==True:
-                os.remove(dir_to_scan+fileName+ext)
-            else:
-                pass
+        i=0
+        while i < 10000:
+            for orgPath in glob.iglob(os.path.join(dir_to_scan, extension)):
+                i+=1
+                fileName, ext = os.path.splitext(os.path.basename(orgPath))
+                shutil.copyfile((dir_to_scan+fileName+ext),
+                                (dir_to_copy+fileName+ext))
+                if delete_org==True:
+                    os.remove(dir_to_scan+fileName+ext)
+                else:
+                    pass
 
     elif recursive == True:
         for path, dirs, files in os.walk(dir_to_scan):
@@ -60,7 +63,6 @@ def rename_files(dirPath, toMatch, toSub, extension):
             newPath = os.path.join(dirPath, newFileName + ext)
             os.rename(orgPath, newPath)
 
-# rename_files('/home/josh/google_drive/misc/corpora/kyrgyz/my_corpus/tokmok_1/wav_16k_mono_merged/', '.wav_16k', '', '.wav')
 
 def delete_all_files(dir_to_scan, extension="*.txt"):
     import os
@@ -95,7 +97,6 @@ def regex_sub_in_files(myPath, toMatch, toSub, encoding):
         newF.write(newText)
         newF.close()
 
-# regex_sub_in_files('/home/josh/Desktop/adapting_folder/atai_plus_tokmok_1.fileids', '\n', '\nadapting_folder/', 'ascii')
        
 def concatenate_files(dirPath, regex, extension, encoding):
     '''
@@ -126,14 +127,38 @@ def concatenate_files(dirPath, regex, extension, encoding):
                     outFile.write(line+'\n')
 
 
-
 def compare_files(fileName1, fileName2, encoding):
     import difflib
     
-    with open(fileName1, encoding=encoding) as file1, open(fileName2, encoding=encoding) as file2:
+    with open(fileName1, 
+              encoding=encoding) as file1, open(fileName2, 
+                                                encoding=encoding) as file2:
         file1Lines = file1.readlines()
         file2Lines = file2.readlines()
 
         d = difflib.Differ()
         diff = d.compare(file1Lines, file2Lines)
         print("\n".join(diff))
+
+
+def split_dir_into_subdirs(sourceDir,destDir,sizeSubdirs):
+    '''
+    THIS REQUIRES PYTHON 3.5
+
+    Input:
+      sourceDir: String. a source dir of files
+      destDir: String. a destination dir for new subdirs
+      sizeSubdirs: Interger. number of files desired in each new subdir
+    '''
+    import os, sys, shutil
+
+    # i will show up as our subdir names
+    i=0
+    for f in os.scandir(sourceDir):
+        if i%sizeSubdirs == 0:
+            curDir = os.path.join(destDir,str(i))
+            os.makedirs(curDir)
+        else:
+            pass
+        shutil.move(os.path.join(sourceDir,f.name),os.path.join(curDir,f.name))
+        i+=1
